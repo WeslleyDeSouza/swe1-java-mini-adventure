@@ -8,6 +8,7 @@ public class Player {
     private int x, y;
     private final int speed = 4;
     private final KeyHandler keyHandler;
+    private CollisionChecker collisionChecker;
 
     // Blickrichtung fuer spaetere Sprite-Animationen
     private String direction = "down";
@@ -19,37 +20,34 @@ public class Player {
         this.y = GamePanel.SCREEN_HEIGHT / 2 - GamePanel.TILE_SIZE / 2;
     }
 
-    public void update() {
-        // Nur bewegen wenn eine Taste gedrueckt ist
-        if (keyHandler.upPressed || keyHandler.downPressed ||
-            keyHandler.leftPressed || keyHandler.rightPressed) {
+    public void setCollisionChecker(CollisionChecker collisionChecker) {
+        this.collisionChecker = collisionChecker;
+    }
 
-            if (keyHandler.upPressed) {
-                direction = "up";
+    public void update() {
+        if (keyHandler.upPressed) {
+            direction = "up";
+            if (collisionChecker == null || collisionChecker.canMove(x, y, GamePanel.TILE_SIZE, "up", speed)) {
                 y -= speed;
             }
-            if (keyHandler.downPressed) {
-                direction = "down";
+        }
+        if (keyHandler.downPressed) {
+            direction = "down";
+            if (collisionChecker == null || collisionChecker.canMove(x, y, GamePanel.TILE_SIZE, "down", speed)) {
                 y += speed;
             }
-            if (keyHandler.leftPressed) {
-                direction = "left";
+        }
+        if (keyHandler.leftPressed) {
+            direction = "left";
+            if (collisionChecker == null || collisionChecker.canMove(x, y, GamePanel.TILE_SIZE, "left", speed)) {
                 x -= speed;
             }
-            if (keyHandler.rightPressed) {
-                direction = "right";
+        }
+        if (keyHandler.rightPressed) {
+            direction = "right";
+            if (collisionChecker == null || collisionChecker.canMove(x, y, GamePanel.TILE_SIZE, "right", speed)) {
                 x += speed;
             }
-        }
-
-        // Bildschirmgrenzen einhalten
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        if (x > GamePanel.SCREEN_WIDTH - GamePanel.TILE_SIZE) {
-            x = GamePanel.SCREEN_WIDTH - GamePanel.TILE_SIZE;
-        }
-        if (y > GamePanel.SCREEN_HEIGHT - GamePanel.TILE_SIZE) {
-            y = GamePanel.SCREEN_HEIGHT - GamePanel.TILE_SIZE;
         }
     }
 

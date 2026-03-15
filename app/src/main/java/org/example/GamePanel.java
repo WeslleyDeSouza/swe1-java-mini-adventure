@@ -20,8 +20,10 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread gameThread;
     private boolean running;
 
-    // Input & Player
+    // Input, Map & Player
     private final KeyHandler keyHandler = new KeyHandler();
+    private final TileManager tileManager = new TileManager();
+    private final CollisionChecker collisionChecker = new CollisionChecker(tileManager);
     private final Player player = new Player(keyHandler);
 
     public GamePanel() {
@@ -30,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
         setDoubleBuffered(true);
         setFocusable(true);
         addKeyListener(keyHandler);
+        player.setCollisionChecker(collisionChecker);
     }
 
     public void startGameLoop() {
@@ -75,6 +78,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        tileManager.draw(g2);
         player.draw(g2);
 
         g2.dispose();
